@@ -14,7 +14,6 @@ export class UserController {
   
   @Post()
   create(@Body() user: User): User  {
-    throw new Error("Method not implemented.");
     const userCreated = this.userService.create(user);
     return userCreated;
   }

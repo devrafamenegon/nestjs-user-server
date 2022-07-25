@@ -5,13 +5,13 @@ import { IsUserAlreadyExist } from "./IsUserAlreadyExist.validator";
 export class User {
   id: number;
 
-  @Expose({name: "username",})
+  @Expose({name: "username"})
   @IsUserAlreadyExist({message: "Username is already taken",})
   @IsNotEmpty({message: "Username is required"})
   @IsString({message: "Username must be a string"})
   username: string;
 
-  @Expose({name: "email",})
+  @Expose({name: "email"})
   @IsEmail({}, {message: 'Email is not valid',})
   email: string;
 
