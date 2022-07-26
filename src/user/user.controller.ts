@@ -1,4 +1,6 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, NotFoundException, Param, Post} from "@nestjs/common";
+import { NestResponse } from "../core/http/nest-response";
+import { NestResponseBuilder } from "../core/http/nest-response-builder";
 import { User } from "./user.entity";
 import { UserService } from "./user.service";
 
@@ -9,12 +11,21 @@ export class UserController {
   @Get(':username')
   findByName(@Param('username') username: string): User {
     const findedUser = this.userService.findByUsername(username);
+    if(!findedUser) {
+      throw new NotFoundException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: `User ${username} not found`,
+      })
+    }
     return findedUser;
   }
   
   @Post()
-  create(@Body() user: User, @Res() res): void  {
-    const userCreated = this.userService.create(user);
-    res.status(HttpStatus.CREATED).location(`/users/${user.username}`).json(userCreated);
+  create(@Body() user: User): NestResponse {
+    return new NestResponseBuilder()
+      .withStatus(HttpStatus.CREATED)
+      .withHeader({'Location': `/users/${user.username}`})
+      .withBody(user)
+      .build();
   }
 }
