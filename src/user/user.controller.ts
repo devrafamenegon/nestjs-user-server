@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Param, Post, Res } from "@nestjs/common";
 import { User } from "./user.entity";
 import { UserService } from "./user.service";
 
@@ -13,8 +13,8 @@ export class UserController {
   }
   
   @Post()
-  create(@Body() user: User): User  {
+  create(@Body() user: User, @Res() res): void  {
     const userCreated = this.userService.create(user);
-    return userCreated;
+    res.status(HttpStatus.CREATED).location(`/users/${user.username}`).json(userCreated);
   }
 }
